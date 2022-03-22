@@ -20,7 +20,13 @@ srcImg = cv2.resize(srcImg, dsize=(640,480), interpolation=cv2.INTER_AREA)
 grayImage = cv2.resize(grayImage, dsize=(640, 480), interpolation=cv2.INTER_AREA)
 
 cv2.imshow("src Image", srcImg)
+
 cv2.imshow("gray Image", grayImage)
+
+#이미지 대칭
+dst = cv2.flip(srcImg, -1)
+cv2.imshow("Flip Image", dst)
+
 
 #회색 영상의 히스토그램 구하기
 hist = cv2.calcHist([grayImage], [0,], None, [256], [0,256])
@@ -40,6 +46,17 @@ for ch, color in zip(channels, colors):
 
 cv2.imshow("src Image", srcImg)
 plt.show()
+
+
+#affine transform
+rows, cols = srcImg.shape[:2]
+pts1 = np.float32([[0,0], [cols-1,0], [0,rows-1]])
+pts2 = np.float32([[100, 0], [cols-100, 100], [cols-400, 250]])
+
+mat = cv2.getAffineTransform(pts1, pts2)
+affineImg = cv2.warpAffine(srcImg, mat, None)
+
+cv2.imshow("affine Image", affineImg)
 
 cv2.waitKey()
 cv2.destroyAllWindows()
