@@ -60,3 +60,38 @@ cv2.imshow("affine Image", affineImg)
 
 cv2.waitKey()
 cv2.destroyAllWindows()
+
+#해리스 코너 추출
+gray = cv2.cvtColor(srcImg, cv2.COLOR_BGR2GRAY)
+
+corner = cv2.cornerHarris(gray, 2, 3, 0.04)
+# 변화량 결과의 최대값 10% 이상의 좌표 구하기 ---②
+coord = np.where(corner > 0.1* corner.max())
+coord = np.stack((coord[1], coord[0]), axis=-1)
+
+# 코너 좌표에 동그리미 그리기
+for x, y in coord:
+    cv2.circle(srcImg, (x,y), 5, (0,0,255), 1, cv2.LINE_AA)
+
+# 변화량을 영상으로 표현하기 위해서 0~255로 정규화
+#corner_norm = cv2.normalize(corner, None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)
+
+#corner_norm = cv2.cvtColor(corner_norm, cv2.COLOR_GRAY2BGR)
+#merged = np.hstack((corner_norm, srcImg))
+cv2.imshow('Harris Corner', srcImg)
+cv2.waitKey()
+cv2.destroyAllWindows()
+
+#FAST 특징점 검출기
+gray = cv2.cvtColor(srcImg, cv2.COLOR_BGR2GRAY)
+
+# FASt 특징 검출기 생성
+fast = cv2.FastFeatureDetector_create(50)
+# 특징점 검출
+keypoints = fast.detect(gray, None)
+# 특징점 그리기
+srcImg = cv2.drawKeypoints(srcImg, keypoints, None)
+
+cv2.imshow('FAST', srcImg)
+cv2.waitKey()
+cv2.destroyAllWindows()
